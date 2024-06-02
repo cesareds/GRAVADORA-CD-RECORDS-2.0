@@ -22,7 +22,7 @@ public class Gravadora {
     }
 
     private String getConfig() {
-        String filePath = "../config.properties"
+        String filePath = "config.properties"
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(filePath)) {
             properties.load(input);
