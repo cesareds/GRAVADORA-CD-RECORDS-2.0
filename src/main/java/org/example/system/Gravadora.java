@@ -8,15 +8,34 @@ import javax.print.Doc;
 import java.util.Arrays;
 import java.util.List;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Gravadora {
     private final MongoDatabase database;
+    private final String db_conn = new String();
 
     public Gravadora() {
         database = getConnection();
     }
 
+    private String getConfig() {
+        String filePath = "../config.properties"
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(filePath)) {
+            properties.load(input);
+
+        } catch( IOException ex) {
+            ex.printStackTrace();
+        }
+        return properties.getProperty("DB_CONNECTION")
+    }
+
     private MongoDatabase getConnection() {
-        String connectionString = "put here connection string";
+        db_conn = getConfig();
+        String connectionString = db_conn;
         MongoClient mongoClient = MongoClients.create(connectionString);
         return mongoClient.getDatabase("CDRecords");
     }
