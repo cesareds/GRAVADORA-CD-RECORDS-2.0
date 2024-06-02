@@ -16,7 +16,7 @@ public class Gravadora {
     }
 
     private MongoDatabase getConnection() {
-        String connectionString = "mongodb+srv://Cluster78301:WUV7WEZman1J@cluster78301.zfynw98.mongodb.net/?retryWrites=true&w=majority&appName=Cluster78301";
+        String connectionString = "put here connection string";
         MongoClient mongoClient = MongoClients.create(connectionString);
         return mongoClient.getDatabase("CDRecords");
     }
