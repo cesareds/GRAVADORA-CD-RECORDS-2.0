@@ -1,10 +1,11 @@
 # GRAVADORA CD RECORDS 2.0 
-
+![MongoDB Icon](LOGO.png)
 Welcome to the GRAVADORA CD RECORDS 2.0 repository!
 
 ## Overview
 
 This project is developed as part of the 'BANCO DE DADOS 2' class. It offers a system for managing record label operations, integrating MongoDB.
+![MongoDB Icon](MONGO.png)
 
 ## Getting Started
 
