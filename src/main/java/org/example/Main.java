@@ -82,6 +82,7 @@ public class Main {
                     break;
                 case 23:
                     mostrarInclusoes();
+                    break;
                 default:
                     System.out.println("ESCOLHA UMA OPÇÃO VÁLIDA!!!!!!");
                     break;

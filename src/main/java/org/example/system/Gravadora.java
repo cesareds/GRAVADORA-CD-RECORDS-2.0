@@ -15,14 +15,14 @@ import java.util.Properties;
 
 public class Gravadora {
     private final MongoDatabase database;
-    private final String db_conn = new String();
+    private String db_conn = new String();
 
     public Gravadora() {
         database = getConnection();
     }
 
     private String getConfig() {
-        String filePath = "config.properties"
+        String filePath = "config.properties";
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(filePath)) {
             properties.load(input);
@@ -30,7 +30,7 @@ public class Gravadora {
         } catch( IOException ex) {
             ex.printStackTrace();
         }
-        return properties.getProperty("DB_CONNECTION")
+        return properties.getProperty("DB_CONNECTION");
     }
 
     private MongoDatabase getConnection() {
@@ -200,23 +200,110 @@ public class Gravadora {
         MongoCollection<Document> participarCollection = database.getCollection("Participar");
         try (MongoCursor<Document> cursor = participarCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Musica DB
+                MongoCollection<Document> musicaCollection = database.getCollection("Musica");
+                ObjectId musicaId = doc.getObjectId("musicaId");
+                Document queryMusica = new Document("_id", musicaId);
+                MongoCursor<Document> cursorMusica = musicaCollection.find(queryMusica).iterator();
+                String nomeMusica = "";
+                if (cursorMusica.hasNext()) {
+                    Document docMusica = cursorMusica.next();
+                    nomeMusica = docMusica.getString("titulo");
+                }
+                cursorMusica.close();
+
+                // Get Musico/Banda DB
+                MongoCollection<Document> musicoCollection = database.getCollection("Musico");
+                MongoCollection<Document> bandaCollection = database.getCollection("Banda");
+                ObjectId criadorId = doc.getObjectId("criadorId");
+                Document queryCriador = new Document("_id", criadorId);
+                MongoCursor<Document> cursorCriadorMusico = musicoCollection.find(queryCriador).iterator();
+                MongoCursor<Document> cursorCriadorBanda = bandaCollection.find(queryCriador).iterator();
+                String nomeCriador = "";
+                if (cursorCriadorMusico.hasNext()) {
+                    Document docCriador = cursorCriadorMusico.next();
+                    nomeCriador = docCriador.getString("nome");
+                } else if (cursorCriadorBanda.hasNext()) {
+                    Document docCriador = cursorCriadorBanda.next();
+                    nomeCriador = docCriador.getString("nome");
+                }
+                cursorCriadorMusico.close();
+                cursorCriadorBanda.close();
+
+                System.out.println("Musica:\t" + nomeMusica + " - Criador:\t" + nomeCriador);
             }
         }
     }
+
+
     public void mostrarProducoes() {
         MongoCollection<Document> produzirCollection = database.getCollection("Produzir");
         try (MongoCursor<Document> cursor = produzirCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Disco DB
+                MongoCollection<Document> discoCollection = database.getCollection("Disco");
+                ObjectId discoId = doc.getObjectId("discoId");
+                Document queryDisco = new Document("_id", discoId);
+                MongoCursor<Document> cursorDisco = discoCollection.find(queryDisco).iterator();
+                String nomeDisco = "";
+                if (cursorDisco.hasNext()) {
+                    Document docDisco = cursorDisco.next();
+                    nomeDisco = docDisco.getString("titulo");
+                }
+                cursorDisco.close();
+
+                // Get Produtor DB
+                MongoCollection<Document> produtorCollection = database.getCollection("Produtor");
+                ObjectId produtorId = doc.getObjectId("produtorId");
+                Document queryProdutor = new Document("_id", produtorId);
+                MongoCursor<Document> cursorProdutor = produtorCollection.find(queryProdutor).iterator();
+                String nomeProdutor = "";
+                if (cursorProdutor.hasNext()) {
+                    Document docProdutor = cursorProdutor.next();
+                    nomeProdutor = docProdutor.getString("nome");
+                }
+                cursorProdutor.close();
+
+                System.out.println("Disco:\t" + nomeDisco + " - Produtor:\t" + nomeProdutor);
             }
         }
     }
+
     public void mostrarTocadas() {
         MongoCollection<Document> tocarCollection = database.getCollection("Tocar");
         try (MongoCursor<Document> cursor = tocarCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Musico DB
+                MongoCollection<Document> musicoCollection = database.getCollection("Musico");
+                ObjectId musicoId = doc.getObjectId("musicoId");
+                Document queryMusico = new Document("_id", musicoId);
+                MongoCursor<Document> cursorMusico = musicoCollection.find(queryMusico).iterator();
+                String nomeMusico = "";
+                if (cursorMusico.hasNext()) {
+                    Document docMusico = cursorMusico.next();
+                    nomeMusico = docMusico.getString("nome");
+                }
+                cursorMusico.close();
+
+                // Get Instrumento DB
+                MongoCollection<Document> instrumentoCollection = database.getCollection("Instrumento");
+                ObjectId instrumentoId = doc.getObjectId("instrumentoId");
+                Document queryInstrumento = new Document("_id", instrumentoId);
+                MongoCursor<Document> cursorInstrumento = instrumentoCollection.find(queryInstrumento).iterator();
+                String nomeInstrumento = "";
+                if (cursorInstrumento.hasNext()) {
+                    Document docInstrumento = cursorInstrumento.next();
+                    nomeInstrumento = docInstrumento.getString("nome");
+                }
+                cursorInstrumento.close();
+
+                System.out.println("Musico:\t" + nomeMusico + " - Instrumento:\t" + nomeInstrumento);
             }
         }
     }
@@ -224,7 +311,40 @@ public class Gravadora {
         MongoCollection<Document> lancamentoCollection = database.getCollection("Lancamento");
         try (MongoCursor<Document> cursor = lancamentoCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Disco DB
+                MongoCollection<Document> discoCollection = database.getCollection("Disco");
+                ObjectId discoId = doc.getObjectId("discoId");
+                Document queryDisco = new Document("_id", discoId);
+                MongoCursor<Document> cursorDisco = discoCollection.find(queryDisco).iterator();
+                String nomeDisco = "";
+                if (cursorDisco.hasNext()) {
+                    Document docDisco = cursorDisco.next();
+                    nomeDisco = docDisco.getString("titulo");
+                }
+                cursorDisco.close();
+
+                // Get Criador (Musico or Banda) DB
+                MongoCollection<Document> musicoCollection = database.getCollection("Musico");
+                MongoCollection<Document> bandaCollection = database.getCollection("Banda");
+                ObjectId criadorId = doc.getObjectId("criadorId");
+                Document queryCriadorMusico = new Document("_id", criadorId);
+                Document queryCriadorBanda = new Document("_id", criadorId);
+                MongoCursor<Document> cursorCriadorMusico = musicoCollection.find(queryCriadorMusico).iterator();
+                MongoCursor<Document> cursorCriadorBanda = bandaCollection.find(queryCriadorBanda).iterator();
+                String nomeCriador = "";
+                if (cursorCriadorMusico.hasNext()) {
+                    Document docCriador = cursorCriadorMusico.next();
+                    nomeCriador = docCriador.getString("nome");
+                } else if (cursorCriadorBanda.hasNext()) {
+                    Document docCriador = cursorCriadorBanda.next();
+                    nomeCriador = docCriador.getString("nome");
+                }
+                cursorCriadorMusico.close();
+                cursorCriadorBanda.close();
+
+                System.out.println("Disco:\t" + nomeDisco + " - Criador:\t" + nomeCriador);
             }
         }
     }
@@ -232,15 +352,68 @@ public class Gravadora {
         MongoCollection<Document> integrarCollection = database.getCollection("Integrar");
         try (MongoCursor<Document> cursor = integrarCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Musico DB
+                MongoCollection<Document> musicoCollection = database.getCollection("Musico");
+                ObjectId musicoId = doc.getObjectId("musicoId");
+                Document queryMusico = new Document("_id", musicoId);
+                MongoCursor<Document> cursorMusico = musicoCollection.find(queryMusico).iterator();
+                String nomeMusico = "";
+                if (cursorMusico.hasNext()) {
+                    Document docMusico = cursorMusico.next();
+                    nomeMusico = docMusico.getString("nome");
+                }
+                cursorMusico.close();
+
+                // Get Banda DB
+                MongoCollection<Document> bandaCollection = database.getCollection("Banda");
+                ObjectId bandaId = doc.getObjectId("bandaId");
+                Document queryBanda = new Document("_id", bandaId);
+                MongoCursor<Document> cursorBanda = bandaCollection.find(queryBanda).iterator();
+                String nomeBanda = "";
+                if (cursorBanda.hasNext()) {
+                    Document docBanda = cursorBanda.next();
+                    nomeBanda = docBanda.getString("nome");
+                }
+                cursorBanda.close();
+
+                System.out.println("Musico:\t" + nomeMusico + " - Banda:\t" + nomeBanda);
             }
         }
     }
+
     public void mostrarInclusoes() {
         MongoCollection<Document> incluirCollection = database.getCollection("Incluir");
         try (MongoCursor<Document> cursor = incluirCollection.find().iterator()) {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                Document doc = cursor.next();
+
+                // Get Music DB
+                MongoCollection<Document> incluirCollectionMusic = database.getCollection("Musica");
+                ObjectId musicaId = doc.getObjectId("musicaId");
+                Document queryMusica = new Document("_id", musicaId);
+                MongoCursor<Document> cursorMusica = incluirCollectionMusic.find(queryMusica).iterator();
+                String nomeMusica = "";
+                if (cursorMusica.hasNext()) {
+                    Document docMusica = cursorMusica.next();
+                    nomeMusica = docMusica.getString("titulo");
+                }
+                cursorMusica.close();
+
+                // Get Disco DB
+                MongoCollection<Document> incluirCollectionDisco = database.getCollection("Disco");
+                ObjectId discoId = doc.getObjectId("discoId");
+                Document queryDisco = new Document("_id", discoId); // Get from Incluir DB
+                MongoCursor<Document> cursorDisco = incluirCollectionDisco.find(queryDisco).iterator();
+                String nomeDisco = "";
+                if (cursorDisco.hasNext()) {
+                    Document docDisco = cursorDisco.next();
+                    nomeDisco = docDisco.getString("titulo");
+                }
+                cursorDisco.close();
+
+                System.out.println("Musica:\t" + nomeMusica + " - Disco:\t" + nomeDisco);
             }
         }
     }
